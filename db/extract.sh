@@ -1,0 +1,2 @@
+mongoexport --host localhost:27017 --db blog --collection articles --out ./db/articles_id.json --jsonArray
+mongoexport --host localhost:27017 --db blog --collection users --out ./db/users_id.json --jsonArray
