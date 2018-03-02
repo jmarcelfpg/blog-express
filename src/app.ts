@@ -1,23 +1,23 @@
 // Server Modules
-import express, { RequestHandler } from '../types/mixinExpressMongoose';
-import * as routes from './routes'
-import http from 'http'
-import path from 'path'
-import mongoose from 'mongoose'
-import {Article, User} from './models'
+import express from 'express';
+import * as routes from './routes';
+import http from 'http';
+import path from 'path';
+import mongoose from 'mongoose';
+import {Article, User} from './models';
 
 // Middleware modules
-import cookieParser from 'cookie-parser'
-import session from 'express-session'
-import logger from 'morgan'
-import errorHandler from 'errorhandler'
-import bodyParser from 'body-parser'
-import methodOverride from 'method-override'
+import cookieParser from 'cookie-parser';
+import session from 'express-session';
+import logger from 'morgan';
+import errorHandler from 'errorhandler';
+import bodyParser from 'body-parser';
+import methodOverride from 'method-override';
 
 // Database environment
 (<any>mongoose).Promise = global.Promise;
 const dbUrl = process.env.MONGOHQ_URL || 'mongodb://@localhost:27017/blog'
-const db = mongoose.connect(dbUrl, {useMongoClient: true})
+const db = mongoose.connect(dbUrl)
 
 const app = express();
 app.locals.appTitle = 'blog-express'
@@ -25,7 +25,6 @@ app.locals.appTitle = 'blog-express'
 // Using middlewares for database
 app.use((req, res, next) => {
   if (!Article || !User) return next(new Error('No models.'))
-  req.models = {Article, User};
   return next()
 })
 
@@ -57,7 +56,7 @@ app.use((req, res, next) => {
 })
 
 // Authorization
-const authorize: RequestHandler = (req, res, next) => {
+const authorize: express.RequestHandler = (req, res, next) => {
   if (req.session && req.session.admin)
     return next()
   else

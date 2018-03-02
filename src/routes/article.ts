@@ -1,8 +1,9 @@
-import { Request, Response, NextFunction, RequestHandler } from "express";
+import { Request, Response, NextFunction, RequestHandler } from 'express';
+import { Article } from '../models';
 
 export let show: RequestHandler = (req, res, next) => {
     if (!req.params.slug) return next(new Error('No article slug.'))
-    req.models.Article.findOne({ slug: req.params.slug },
+    Article.findOne({ slug: req.params.slug },
         (error, article) => {
 
             if (error) return next(error)
@@ -13,7 +14,7 @@ export let show: RequestHandler = (req, res, next) => {
         })
 };
 export let list: RequestHandler = (req, res, next) => {
-    req.models.Article.list((error, articles) => {
+    Article.list((error, articles) => {
         if (error) return next(error);
         res.send({ articles: articles })
     })
@@ -22,7 +23,7 @@ export let add: RequestHandler = (req, res, next) => {
     if (!req.body.article) return next(new Error('No article payload.'))
     let article = req.body.article
     article.published = false
-    req.models.Article.create(article)
+    Article.create(article)
         .then((articleResponse) => {
             res.send(articleResponse);
         })
@@ -33,7 +34,7 @@ export let edit: RequestHandler = (req, res, next) => {
     if (!req.body.article) return next(new Error('No article payload.'));
 
     // using findById()
-    req.models.Article.findById(req.params.id)
+    Article.findById(req.params.id)
         .then((article) => {
             if (article) {
                 article.set(req.body.article);
@@ -57,7 +58,7 @@ export let edit: RequestHandler = (req, res, next) => {
 };
 export let del: RequestHandler = (req, res, next) => {
     if (!req.params.id) return next(new Error('No article ID.'))
-    req.models.Article.findById(req.params.id)
+    Article.findById(req.params.id)
         .then((article) => {
             if (!article) return next(new Error('Article not found'))
             return article.remove()
@@ -80,17 +81,16 @@ export let postArticle: RequestHandler = (req, res, next) => {
         text: req.body.text,
         published: false
     }
-    req.models.Article.create(article)
-    .then((articleResponse) => {
-        res.render('post',
-            { error: 'Article was added. Publish it on Admin page.' })
-    })
-    .catch(next);
+    Article.create(article)
+        .then((articleResponse) => {
+            res.render('post',
+                { error: 'Article was added. Publish it on Admin page.' })
+        })
+        .catch(next);
 };
 export let admin: RequestHandler = (req, res, next) => {
-    req.models
-        .Article.list((error, articles) => {
-            if (error) return next(error)
-            res.render('admin', { articles: articles })
-        });
+    Article.list((error, articles) => {
+        if (error) return next(error)
+        res.render('admin', { articles: articles })
+    });
 };

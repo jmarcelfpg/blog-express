@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction, RequestHandler } from "express";
+import {User} from "../models";
 
 export let list: RequestHandler = (req, res, next) => {
     res.send('respond with a resource')
@@ -17,7 +18,7 @@ export let authenticate: RequestHandler = (req, res, next) => {
         return res.render('login', {
             error: 'Please enter your email and password.'
         })
-    req.models.User.findOne({
+    User.findOne({
         email: req.body.email,
         password: req.body.password
     })
