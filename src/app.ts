@@ -1,30 +1,30 @@
 // Server Modules
-const express = require('express')
-const routes = require('./routes')
-const http = require('http')
-const path = require('path')
-const mongoose = require('mongoose')
-const dbUrl = process.env.MONGOHQ_URL || 'mongodb://@localhost:27017/blog'
-const models = require('./models')
-
-// Database environment
-const db = mongoose.connect(dbUrl, {useMongoClient: true})
+import express from 'express';
+import * as routes from './routes';
+import http from 'http';
+import path from 'path';
+import mongoose from 'mongoose';
+import {Article, User} from './models';
 
 // Middleware modules
-const cookieParser = require('cookie-parser')
-const session = require('express-session')
-const logger = require('morgan')
-const errorHandler = require('errorhandler')
-const bodyParser = require('body-parser')
-const methodOverride = require('method-override')
+import cookieParser from 'cookie-parser';
+import session from 'express-session';
+import logger from 'morgan';
+import errorHandler from 'errorhandler';
+import bodyParser from 'body-parser';
+import methodOverride from 'method-override';
 
-const app = express()
+// Database environment
+(<any>mongoose).Promise = global.Promise;
+const dbUrl = process.env.MONGOHQ_URL || 'mongodb://@localhost:27017/blog'
+const db = mongoose.connect(dbUrl)
+
+const app = express();
 app.locals.appTitle = 'blog-express'
 
 // Using middlewares for database
 app.use((req, res, next) => {
-  if (!models.Article || !models.User) return next(new Error('No models.'))
-  req.models = models
+  if (!Article || !User) return next(new Error('No models.'))
   return next()
 })
 
@@ -56,7 +56,7 @@ app.use((req, res, next) => {
 })
 
 // Authorization
-const authorize = (req, res, next) => {
+const authorize: express.RequestHandler = (req, res, next) => {
   if (req.session && req.session.admin)
     return next()
   else
@@ -110,7 +110,7 @@ if (require.main === module) {
   boot() // "node app.js" command
 } else {
   console.info('Running app as a module')
-  exports.boot = boot
-  exports.shutdown = shutdown
-  exports.port = app.get('port')
 }
+
+let port = app.get('port')
+export {boot, shutdown, port}

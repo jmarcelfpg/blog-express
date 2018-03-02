@@ -1,11 +1,11 @@
-const boot = require('../app').boot
-const shutdown = require('../app').shutdown
-const port = require('../app').port
-const superagent = require('superagent')
-const expect = require('expect.js')
+import {boot, shutdown, port} from '../app'
+import mocha from 'mocha'
+import superagent from 'superagent' 
+import expect from 'expect.js'
+import { ArticleDocument } from 'mongoose';
 
 // TODO: seed from the test and then clean up
-const seedArticles = require('../db/articles.json')
+const seedArticles: ArticleDocument[] = require('../db/articles.json');
 // const seedUsers = require('../db/users.json')
 
 describe('server', () => {

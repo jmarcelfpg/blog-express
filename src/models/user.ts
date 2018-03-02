@@ -1,10 +1,10 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 const userSchema = new mongoose.Schema({
     email: {
         type: String,
         required: true,
-        set: function (value) {
+        set: function (value: string) {
             return value.trim().toLowerCase()
         },
         validate: [
@@ -21,5 +21,4 @@ const userSchema = new mongoose.Schema({
     }
 })
 
-
-module.exports = mongoose.model('User', userSchema);
+export const User: mongoose.UserModel = mongoose.model<mongoose.UserDocument, mongoose.UserModel>('User', userSchema);
