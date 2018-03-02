@@ -1,7 +1,8 @@
-exports.article = require('./article');
-exports.user = require('./user');
+import { RequestHandler } from "express";
+export let article = require('./article');
+export let user = require('./user');
 
-exports.index = (req, res, next) => {
+export let index: RequestHandler = (req, res, next) => {
     req.models.Article
         .find({ published: true }, 
             null, 

@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 const articleSchema = new mongoose.Schema({
     title: {
@@ -16,16 +16,17 @@ const articleSchema = new mongoose.Schema({
     },
     slug: {
         type: String,
-        set: function (value){
+        set: function (value: string){
             return value.toLowerCase().replace(' ', '-');
         }
     }
 })
 
 articleSchema.static({
-    list: function(callback){
+    list: function(callback: Function){
         this.find({}, null, {sort: {_id: -1}}, callback);
     }
 });
 
-module.exports = mongoose.model('Article', articleSchema);
+
+export const Article: mongoose.ArticleModel = mongoose.model<mongoose.ArticleDocument, mongoose.ArticleModel>('Article', articleSchema);
